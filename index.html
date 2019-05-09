@@ -192,7 +192,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="Navigationsleiste an/ausschalten">
+    <button aria-label="Cambiar a barra de navegación">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -220,7 +220,7 @@
 
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Inicio</a>
 
   </li>
         
@@ -237,7 +237,7 @@
 
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archivo</a>
 
   </li>
 
@@ -327,14 +327,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Publicado el</span>
               
 
               
                 
               
 
-              <time title="Erstellt: 2019-05-09 09:29:23 / Geändert am: 22:43:50" itemprop="dateCreated datePublished" datetime="2019-05-09T09:29:23+08:00">2019-05-09</time>
+              <time title="Creado por: 2019-05-09 09:29:23 / Modificado por: 22:49:37" itemprop="dateCreated datePublished" datetime="2019-05-09T09:29:23+08:00">2019-05-09</time>
             
 
             
@@ -393,17 +393,18 @@
         return Response(ps.data)
     else:
         return Response(ps.errors)
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulr.py</span><br></pre></td></tr></table></figure>
-<p>与平常类似，没有参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- 这是比较简便的一种方法,使用该方法时还需要在url路由中配置相应的参数  </span><br><span class="line"></span><br><span class="line">views.py</span><br></pre></td></tr></table></figure></p>
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ulr.py</span><br></pre></td></tr></table></figure>
+<p>与平常类似，没有参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 这是比较简便的一种方法,使用该方法时还需要在url路由中配置相应的参数  </span><br><span class="line"></span><br><span class="line">views.py</span><br></pre></td></tr></table></figure></p>
 <p>from .models import Product<br>from .serializers import ProductSerializers<br>from rest_framework import viewsets</p>
 <p>class ProductViewSet(viewsets.ModelViewSet):<br>    queryset = Product.objects.all()<br>    serializer_class = ProductSerializers</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url.py</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">url.py</span><br></pre></td></tr></table></figure>
 <p>from django.urls import path<br>from hh import views</p>
 <p>urlpatterns = [<br>    path(‘product/‘, views.ProductViewSet.as_view({<br>        “get”: “list”,<br>        “post”: “create”<br>    }), name= “product”),<br>    path(‘product/<pk>‘, views.ProductViewSet.as_view({<br>        “get”: “retrieve”,<br>        “put”: “update”,<br>        “delete”:”destroy”,<br>    }))<br>]</pk></p>
 <pre><code>## 认证及渲染器等组件  
 核心是dispatch(),可以在view中的CBV中直接配置配置，也可以在settings里全局配置。
-- 继承：由上到下View --&gt; APIView(View) --&gt; GenericAPIView(views.APIView) --&gt; GenericViewSet(ViewSetMixin, generics.GenericAPIView)
-</code></pre><p>ModelViewSet(mixins.CreateModelMixin,<br>                   mixins.RetrieveModelMixin,<br>                   mixins.UpdateModelMixin,<br>                   mixins.DestroyModelMixin,<br>                   mixins.ListModelMixin,<br>                   GenericViewSet)<br><code>`</code>  </p>
+- 继承：由上到下View --&gt; APIView(View) --&gt; GenericAPIView(views.APIView) --&gt; GenericViewSet(ViewSetMixin, generics.GenericAPIView)  
+
+</code></pre><p>ModelViewSet(mixins.CreateModelMixin,<br>                   mixins.RetrieveModelMixin,<br>                   mixins.UpdateModelMixin,<br>                   mixins.DestroyModelMixin,<br>                   mixins.ListModelMixin,<br>                   GenericViewSet)<br><code>`</code>   </p>
 <ul>
 <li>mixins.py中包含： CreateModelMixin等等</li>
 </ul>
@@ -501,14 +502,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Publicado el</span>
               
 
               
                 
               
 
-              <time title="Erstellt: 2019-05-09 08:06:50 / Geändert am: 09:22:52" itemprop="dateCreated datePublished" datetime="2019-05-09T08:06:50+08:00">2019-05-09</time>
+              <time title="Creado por: 2019-05-09 08:06:50 / Modificado por: 09:22:52" itemprop="dateCreated datePublished" datetime="2019-05-09T08:06:50+08:00">2019-05-09</time>
             
 
             
@@ -606,164 +607,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/markdown写法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="pyh">
-      <meta itemprop="description" content="carry on!">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanzawa">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/05/08/markdown写法/" class="post-title-link" itemprop="url">markdown写法</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-
-              
-                
-              
-
-              <time title="Erstellt: 2019-05-08 19:35:16" itemprop="dateCreated datePublished" datetime="2019-05-08T19:35:16+08:00">2019-05-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Bearbeitet am</span>
-                
-                <time title="Geändert am: 2019-05-09 09:01:37" itemprop="dateModified" datetime="2019-05-09T09:01:37+08:00">2019-05-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="md文件的写法"><a href="#md文件的写法" class="headerlink" title=".md文件的写法"></a>.md文件的写法</h2><p>1.一、二、三级标题分别对应# ## ###<br>2.两个空格即换行  </p>
-<blockquote>
-<p>详细参考<a href="https://sspai.com/post/45816" target="_blank" rel="noopener">https://sspai.com/post/45816</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/hexo搭建及部署到GitHub/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -802,14 +645,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Publicado el</span>
               
 
               
                 
               
 
-              <time title="Erstellt: 2019-05-08 19:35:16" itemprop="dateCreated datePublished" datetime="2019-05-08T19:35:16+08:00">2019-05-08</time>
+              <time title="Creado por: 2019-05-08 19:35:16" itemprop="dateCreated datePublished" datetime="2019-05-08T19:35:16+08:00">2019-05-08</time>
             
 
             
@@ -824,9 +667,9 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 
-                  <span class="post-meta-item-text">Bearbeitet am</span>
+                  <span class="post-meta-item-text">Editado el</span>
                 
-                <time title="Geändert am: 2019-05-09 09:23:13" itemprop="dateModified" datetime="2019-05-09T09:23:13+08:00">2019-05-09</time>
+                <time title="Modificado por: 2019-05-09 09:23:13" itemprop="dateModified" datetime="2019-05-09T09:23:13+08:00">2019-05-09</time>
               
             
           </span>
@@ -915,6 +758,164 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/markdown写法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="pyh">
+      <meta itemprop="description" content="carry on!">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanzawa">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/08/markdown写法/" class="post-title-link" itemprop="url">markdown写法</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Publicado el</span>
+              
+
+              
+                
+              
+
+              <time title="Creado por: 2019-05-08 19:35:16" itemprop="dateCreated datePublished" datetime="2019-05-08T19:35:16+08:00">2019-05-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Editado el</span>
+                
+                <time title="Modificado por: 2019-05-09 09:01:37" itemprop="dateModified" datetime="2019-05-09T09:01:37+08:00">2019-05-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="md文件的写法"><a href="#md文件的写法" class="headerlink" title=".md文件的写法"></a>.md文件的写法</h2><p>1.一、二、三级标题分别对应# ## ###<br>2.两个空格即换行  </p>
+<blockquote>
+<p>详细参考<a href="https://sspai.com/post/45816" target="_blank" rel="noopener">https://sspai.com/post/45816</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -958,7 +959,7 @@
                   <a href="/archives/">
                 
                     <span class="site-state-item-count">4</span>
-                    <span class="site-state-item-name">Artikel</span>
+                    <span class="site-state-item-name">entradas</span>
                   </a>
                 </div>
               
@@ -981,7 +982,7 @@
                       
                     
                     <span class="site-state-item-count">4</span>
-                    <span class="site-state-item-name">schlagwörter</span>
+                    <span class="site-state-item-name">tags</span>
                   
                 </div>
               
@@ -1034,7 +1035,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+  <div class="powered-by">Creado mediante <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
 
 
 
@@ -1042,7 +1043,7 @@
 
 
 
-  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+  <div class="theme-info">Tema – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
 
 
 

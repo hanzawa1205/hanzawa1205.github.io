@@ -104,7 +104,7 @@
 <meta property="og:site_name" content="Hanzawa">
 <meta property="og:description" content="dajngo restframework组件(10)序列化组件 方法1：  根据models中的字段转换 12345from rest_framework import serializersclass ProductSerializers(serializers.Serializer):	name = serializers.charfield	.....  方法2：   12345678910">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-09T14:43:50.188Z">
+<meta property="og:updated_time" content="2019-05-09T14:49:37.340Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="django restframework组件">
 <meta name="twitter:description" content="dajngo restframework组件(10)序列化组件 方法1：  根据models中的字段转换 12345from rest_framework import serializersclass ProductSerializers(serializers.Serializer):	name = serializers.charfield	.....  方法2：   12345678910">
@@ -193,7 +193,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="Navigationsleiste an/ausschalten">
+    <button aria-label="Cambiar a barra de navegación">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -221,7 +221,7 @@
 
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Inicio</a>
 
   </li>
         
@@ -238,7 +238,7 @@
 
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archivo</a>
 
   </li>
 
@@ -326,14 +326,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Publicado el</span>
               
 
               
                 
               
 
-              <time title="Erstellt: 2019-05-09 09:29:23 / Geändert am: 22:43:50" itemprop="dateCreated datePublished" datetime="2019-05-09T09:29:23+08:00">2019-05-09</time>
+              <time title="Creado por: 2019-05-09 09:29:23 / Modificado por: 22:49:37" itemprop="dateCreated datePublished" datetime="2019-05-09T09:29:23+08:00">2019-05-09</time>
             
 
             
@@ -390,17 +390,18 @@
         return Response(ps.data)
     else:
         return Response(ps.errors)
-</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ulr.py</span><br></pre></td></tr></table></figure>
-<p>与平常类似，没有参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- 这是比较简便的一种方法,使用该方法时还需要在url路由中配置相应的参数  </span><br><span class="line"></span><br><span class="line">views.py</span><br></pre></td></tr></table></figure></p>
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">ulr.py</span><br></pre></td></tr></table></figure>
+<p>与平常类似，没有参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 这是比较简便的一种方法,使用该方法时还需要在url路由中配置相应的参数  </span><br><span class="line"></span><br><span class="line">views.py</span><br></pre></td></tr></table></figure></p>
 <p>from .models import Product<br>from .serializers import ProductSerializers<br>from rest_framework import viewsets</p>
 <p>class ProductViewSet(viewsets.ModelViewSet):<br>    queryset = Product.objects.all()<br>    serializer_class = ProductSerializers</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url.py</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">url.py</span><br></pre></td></tr></table></figure>
 <p>from django.urls import path<br>from hh import views</p>
 <p>urlpatterns = [<br>    path(‘product/‘, views.ProductViewSet.as_view({<br>        “get”: “list”,<br>        “post”: “create”<br>    }), name= “product”),<br>    path(‘product/<pk>‘, views.ProductViewSet.as_view({<br>        “get”: “retrieve”,<br>        “put”: “update”,<br>        “delete”:”destroy”,<br>    }))<br>]</pk></p>
 <pre><code>## 认证及渲染器等组件  
 核心是dispatch(),可以在view中的CBV中直接配置配置，也可以在settings里全局配置。
-- 继承：由上到下View --&gt; APIView(View) --&gt; GenericAPIView(views.APIView) --&gt; GenericViewSet(ViewSetMixin, generics.GenericAPIView)
-</code></pre><p>ModelViewSet(mixins.CreateModelMixin,<br>                   mixins.RetrieveModelMixin,<br>                   mixins.UpdateModelMixin,<br>                   mixins.DestroyModelMixin,<br>                   mixins.ListModelMixin,<br>                   GenericViewSet)<br><code>`</code>  </p>
+- 继承：由上到下View --&gt; APIView(View) --&gt; GenericAPIView(views.APIView) --&gt; GenericViewSet(ViewSetMixin, generics.GenericAPIView)  
+
+</code></pre><p>ModelViewSet(mixins.CreateModelMixin,<br>                   mixins.RetrieveModelMixin,<br>                   mixins.UpdateModelMixin,<br>                   mixins.DestroyModelMixin,<br>                   mixins.ListModelMixin,<br>                   GenericViewSet)<br><code>`</code>   </p>
 <ul>
 <li>mixins.py中包含： CreateModelMixin等等</li>
 </ul>
@@ -494,10 +495,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Inhaltsverzeichnis
+            Tabla de contenidos
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Übersicht
+            Inicio
           </li>
         </ul>
       
@@ -518,7 +519,7 @@
                   <a href="/archives/">
                 
                     <span class="site-state-item-count">4</span>
-                    <span class="site-state-item-name">Artikel</span>
+                    <span class="site-state-item-name">entradas</span>
                   </a>
                 </div>
               
@@ -541,7 +542,7 @@
                       
                     
                     <span class="site-state-item-count">4</span>
-                    <span class="site-state-item-name">schlagwörter</span>
+                    <span class="site-state-item-name">tags</span>
                   
                 </div>
               
@@ -611,7 +612,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+  <div class="powered-by">Creado mediante <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
 
 
 
@@ -619,7 +620,7 @@
 
 
 
-  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
+  <div class="theme-info">Tema – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.1.1</div>
 
 
 
