@@ -289,6 +289,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/10/wiki-api-of-python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="pyh">
+      <meta itemprop="description" content="carry on!">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanzawa">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/10/wiki-api-of-python/" class="post-title-link" itemprop="url">wiki api of python</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-05-10 22:34:47 / Geändert am: 22:48:30" itemprop="dateCreated datePublished" datetime="2019-05-10T22:34:47+08:00">2019-05-10</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="wikipedia-api-of-python"><a href="#wikipedia-api-of-python" class="headerlink" title="wikipedia_api of python"></a>wikipedia_api of python</h2><p>这里介绍python的Wikipedia包用来吊维基百科的接口。</p>
+<ul>
+<li>安装Wikipedia包<blockquote>
+<p>pip install wikipedia</p>
+</blockquote>
+</li>
+<li>Wikipedia包的使用<br>首先导入Wikipedia包  <figure class="highlight plain"><figcaption><span>wikipedia```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  &gt;wikipedia.set_lang(&quot;zh&quot;)   #对维基百科的语言进行设置，这里设置汉字，但实现搜索需要翻墙。  </span><br><span class="line">  &gt;wikipeida.search(&quot;???&quot;)  #获取与输入关键词有关的词条</span><br><span class="line">  &gt;wikipedia.page(&quot;???&quot;)  #获取关键词的搜索结果  </span><br><span class="line"></span><br><span class="line">- 这里我自己写了一个调用接口搜索的函数：</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>import wikipedia</p>
+<p>def wiki_search(keyword):<br>    wikipedia.set_lang(“zh”)<br>    keyword = wikipedia.page(keyword)<br>    return keyword.content<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- 在项目中的应用</span><br></pre></td></tr></table></figure></p>
+<p>def wiki_find(request):<br>    keyword = request.GET.get(‘keyword’)<br>    print(keyword)<br>    wiki_content = Wiki.objects.filter(title=keyword)<br>    if wiki_content:<br>        return HttpResponse(wiki_content[0].content)<br>    else:<br>        wiki_content = wiki_search(keyword=keyword)<br>        Wiki.objects.create(title=keyword, content=wiki_content)<br>        return HttpResponse(wiki_content)</p>
+<p><code>`</code></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/09/django-restframework组件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -958,7 +1112,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">Artikel</span>
                   </a>
                 </div>
@@ -981,7 +1135,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">4</span>
+                      
+                    
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">schlagwörter</span>
                   
                 </div>
