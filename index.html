@@ -289,6 +289,615 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/文件和异常/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="pyh">
+      <meta itemprop="description" content="carry on!">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanzawa">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/13/文件和异常/" class="post-title-link" itemprop="url">文件和异常</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-05-13 18:15:19 / Geändert am: 19:41:03" itemprop="dateCreated datePublished" datetime="2019-05-13T18:15:19+08:00">2019-05-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="文件和异常"><a href="#文件和异常" class="headerlink" title="文件和异常"></a>文件和异常</h2><ul>
+<li><p>计算机的文件系统是一种存储和组织计算机数据的方法，它使得对其访问和查找变得容易，文件系统使用文件和树形目录的抽象逻辑概念代替了硬盘和光盘等物理设备使用数据块的概念，用户使用文件系统来保存数据不必关心数据实际保存在硬盘（或者光盘）的地址为多少的数据块上，只需要记住这个文件的所属目录和文件名。在写入新数据之前，用户不必关心硬盘上的那个块地址没有被使用，硬盘上的存储空间管理（分配和释放）功能由文件系统自动完成，用户只需要记住数据被写入到了哪个文件中。</p>
+</li>
+<li><p>文件系统通常使用硬盘和光盘这样的存储设备，并维护文件在设备中的物理位置。但是，实际上文件系统也可能仅仅是一种访问数据的界面而已，实际的数据是通过网络协议（如NFS、SMB、9P等）提供的或者内存上，甚至可能根本没有对应的文件（如proc文件系统）。</p>
+</li>
+<li><p>严格地说，文件系统是一套实现了数据的存储、分级组织、访问和获取等操作的抽象数据类型（Abstract data type）。</p>
+</li>
+</ul>
+<ul>
+<li>操作模式    具体含义</li>
+<li>‘r’    读取 （默认）</li>
+<li>‘w’    写入（会先截断之前的内容）</li>
+<li>‘x’    写入，如果文件已经存在会产生异常</li>
+<li>‘a’    追加，将内容写入到已有文件的末尾</li>
+<li>‘b’    二进制模式</li>
+<li>‘t’    文本模式（默认）</li>
+<li>‘+’    更新（既可以读又可以写）</li>
+</ul>
+<p><img src="https://github.com/jackfrued/Python-100-Days/blob/master/Day01-15/Day11/res/file-open-mode.png" alt></p>
+<ul>
+<li>读取文本文件时，需要在使用open函数时指定好带路径的文件名（可以使用相对路径或绝对路径）并将文件模式设置为’r’（如果不指定，默认值也是’r’），然后通过encoding参数指定编码（如果不指定，默认值是None，那么在读取文件时使用的是操作系统默认的编码），如果不能保证保存文件时使用的编码方式与encoding参数指定的编码方式是一致的，那么就可能因无法解码字符而导致读取失败。下面的例子演示了如何读取一个纯文本文件。  </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    f = open(&apos;致橡树.txt&apos;, &apos;r&apos;, encoding=&apos;utf-8&apos;)</span><br><span class="line">    print(f.read())</span><br><span class="line">    f.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()  </span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 若上述open函数指定的文件并不存在或者无法打开，那么将引发异常状况导致程序崩溃。为了让代码有一定的健壮性和容错性，我们可以使用Python的异常机制对可能在运行时发生状况的代码进行适当的处理，如下所示。</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    f = None</span><br><span class="line">    try:</span><br><span class="line">        f = open(&apos;致橡树.txt&apos;, &apos;r&apos;, encoding=&apos;utf-8&apos;)</span><br><span class="line">        print(f.read())</span><br><span class="line">    except FileNotFoundError:</span><br><span class="line">        print(&apos;无法打开指定的文件!&apos;)</span><br><span class="line">    except LookupError:</span><br><span class="line">        print(&apos;指定了未知的编码!&apos;)</span><br><span class="line">    except UnicodeDecodeError:</span><br><span class="line">        print(&apos;读取文件时解码错误!&apos;)</span><br><span class="line">    finally:</span><br><span class="line">        if f:</span><br><span class="line">            f.close()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在Python中，我们可以将那些在运行时可能会出现状况的代码放在try代码块中，在try代码块的后面可以跟上一个或多个except来捕获可能出现的异常状况。例如在上面读取文件的过程中，文件找不到会引发FileNotFoundError，指定了未知的编码会引发LookupError，而如果读取文件时无法按指定方式解码会引发UnicodeDecodeError，我们在try后面跟上了三个except分别处理这三种不同的异常状况。最后我们使用finally代码块来关闭打开的文件，释放掉程序中获取的外部资源，由于finally块的代码不论程序正常还是异常都会执行到（甚至是调用了sys模块的exit函数退出Python环境，finally块都会被执行，因为exit函数实质上是引发了SystemExit异常），因此我们通常把finally块称为“总是执行代码块”，它最适合用来做释放外部资源的操作。如果不愿意在finally代码块中关闭文件对象释放资源，也可以使用上下文语法，通过with关键字指定文件对象的上下文环境并在离开上下文环境时自动释放文件资源，代码如下所示。  </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    try:</span><br><span class="line">        with open(&apos;致橡树.txt&apos;, &apos;r&apos;, encoding=&apos;utf-8&apos;) as f:</span><br><span class="line">            print(f.read())</span><br><span class="line">    except FileNotFoundError:</span><br><span class="line">        print(&apos;无法打开指定的文件!&apos;)</span><br><span class="line">    except LookupError:</span><br><span class="line">        print(&apos;指定了未知的编码!&apos;)</span><br><span class="line">    except UnicodeDecodeError:</span><br><span class="line">        print(&apos;读取文件时解码错误!&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">- 除了使用文件对象的read方法读取文件之外，还可以使用for-in循环逐行读取或者用readlines方法将文件按行读取到一个列表容器中，代码如下所示。  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 要将文本信息写入文件文件也非常简单，在使用open函数时指定好文件名并将文件模式设置为&apos;w&apos;即可。注意如果需要对文件内容进行追加式写入，应该将模式设置为&apos;a&apos;。如果要写入的文件不存在会自动创建文件而不是引发异常。下面的例子演示了如何将1-9999直接的素数分别写入三个文件中（1-99之间的素数保存在a.txt中，100-999之间的素数保存在b.txt中，1000-9999之间的素数保存在c.txt中）。  </span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">from math import sqrt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def is_prime(n):</span><br><span class="line">    &quot;&quot;&quot;判断素数的函数&quot;&quot;&quot;</span><br><span class="line">    assert n &gt; 0</span><br><span class="line">    for factor in range(2, int(sqrt(n)) + 1):</span><br><span class="line">        if n % factor == 0:</span><br><span class="line">            return False</span><br><span class="line">    return True if n != 1 else False</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    filenames = (&apos;a.txt&apos;, &apos;b.txt&apos;, &apos;c.txt&apos;)</span><br><span class="line">    fs_list = []</span><br><span class="line">    try:</span><br><span class="line">        for filename in filenames:</span><br><span class="line">            fs_list.append(open(filename, &apos;w&apos;, encoding=&apos;utf-8&apos;))</span><br><span class="line">        for number in range(1, 10000):</span><br><span class="line">            if is_prime(number):</span><br><span class="line">                if number &lt; 100:</span><br><span class="line">                    fs_list[0].write(str(number) + &apos;\n&apos;)</span><br><span class="line">                elif number &lt; 1000:</span><br><span class="line">                    fs_list[1].write(str(number) + &apos;\n&apos;)</span><br><span class="line">                else:</span><br><span class="line">                    fs_list[2].write(str(number) + &apos;\n&apos;)</span><br><span class="line">    except IOError as ex:</span><br><span class="line">        print(ex)</span><br><span class="line">        print(&apos;写文件时发生错误!&apos;)</span><br><span class="line">    finally:</span><br><span class="line">        for fs in fs_list:</span><br><span class="line">            fs.close()</span><br><span class="line">    print(&apos;操作完成!&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">### 读写二进制文件</span><br><span class="line">知道了如何读写文本文件要读写二进制文件也就很简单了，下面的代码实现了复制图片文件的功能。  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    try:</span><br><span class="line">        with open(&apos;guido.jpg&apos;, &apos;rb&apos;) as fs1:</span><br><span class="line">            data = fs1.read()</span><br><span class="line">            print(type(data))  # &lt;class &apos;bytes&apos;&gt;</span><br><span class="line">        with open(&apos;吉多.jpg&apos;, &apos;wb&apos;) as fs2:</span><br><span class="line">            fs2.write(data)</span><br><span class="line">    except FileNotFoundError as e:</span><br><span class="line">        print(&apos;指定的文件无法打开.&apos;)</span><br><span class="line">    except IOError as e:</span><br><span class="line">        print(&apos;读写文件时出现错误.&apos;)</span><br><span class="line">    print(&apos;程序执行结束.&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()  </span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">### 读写JSON文件</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- JSON	Python</span><br><span class="line">- object	dict</span><br><span class="line">- array	list</span><br><span class="line">- string	str</span><br><span class="line">- number (int / real)	int / float</span><br><span class="line">- true / false	True / False</span><br><span class="line">- null	None</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- Python	JSON</span><br><span class="line">- dict	object</span><br><span class="line">- list, tuple	array</span><br><span class="line">- str	string</span><br><span class="line">- int, float, int- &amp; float-derived Enums	number</span><br><span class="line">- True / False	true / false</span><br><span class="line">- None	null</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- 我们使用Python中的json模块就可以将字典或列表以JSON格式保存到文件中，代码如下所示。  </span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">import json</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    mydict = &#123;</span><br><span class="line">        &apos;name&apos;: &apos;骆昊&apos;,</span><br><span class="line">        &apos;age&apos;: 38,</span><br><span class="line">        &apos;qq&apos;: 957658,</span><br><span class="line">        &apos;friends&apos;: [&apos;王大锤&apos;, &apos;白元芳&apos;],</span><br><span class="line">        &apos;cars&apos;: [</span><br><span class="line">            &#123;&apos;brand&apos;: &apos;BYD&apos;, &apos;max_speed&apos;: 180&#125;,</span><br><span class="line">            &#123;&apos;brand&apos;: &apos;Audi&apos;, &apos;max_speed&apos;: 280&#125;,</span><br><span class="line">            &#123;&apos;brand&apos;: &apos;Benz&apos;, &apos;max_speed&apos;: 320&#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">    try:</span><br><span class="line">        with open(&apos;data.json&apos;, &apos;w&apos;, encoding=&apos;utf-8&apos;) as fs:</span><br><span class="line">            json.dump(mydict, fs)</span><br><span class="line">    except IOError as e:</span><br><span class="line">        print(e)</span><br><span class="line">    print(&apos;保存数据完成!&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<p>son模块主要有四个比较重要的函数，分别是：</p>
+<ul>
+<li>dump - 将Python对象按照JSON格式序列化到文件中</li>
+<li>dumps - 将Python对象处理成JSON格式的字符串</li>
+<li>load - 将文件中的JSON数据反序列化成对象</li>
+<li>loads - 将字符串的内容反序列化成Python对象</li>
+</ul>
+<p>这里出现了两个概念，一个叫序列化，一个叫反序列化。自由的百科全书维基百科上对这两个概念是这样解释的：“序列化（serialization）在计算机科学的数据处理中，是指将数据结构或对象状态转换为可以存储或传输的形式，这样在需要的时候能够恢复到原先的状态，而且通过序列化的数据重新获取字节时，可以利用这些字节来产生原始对象的副本（拷贝）。与这个过程相反的动作，即从一系列字节中提取数据结构的操作，就是反序列化（deserialization）”</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/13/python-gui/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="pyh">
+      <meta itemprop="description" content="carry on!">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanzawa">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/13/python-gui/" class="post-title-link" itemprop="url">python gui</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-05-13 14:00:31 / Geändert am: 18:12:02" itemprop="dateCreated datePublished" datetime="2019-05-13T14:00:31+08:00">2019-05-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="图形用户界面和游戏开发"><a href="#图形用户界面和游戏开发" class="headerlink" title="图形用户界面和游戏开发"></a>图形用户界面和游戏开发</h2><ul>
+<li>基本上使用tkinter来开发GUI应用需要以下5个步骤：</li>
+</ul>
+<blockquote>
+<p>导入tkinter模块中我们需要的东西。  </p>
+</blockquote>
+<blockquote>
+<p>创建一个顶层窗口对象并用它来承载整个GUI应用。</p>
+</blockquote>
+<blockquote>
+<p>在顶层窗口对象上添加GUI组件。</p>
+</blockquote>
+<blockquote>
+<p>通过代码将这些GUI组件的功能组织起来。</p>
+</blockquote>
+<blockquote>
+<p>进入主事件循环(main loop)。  </p>
+</blockquote>
+<p>下面的代码演示了如何使用tkinter做一个简单的GUI应用。  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line">import tkinter</span><br><span class="line">import tkinter.messagebox</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    flag = True</span><br><span class="line"></span><br><span class="line">    # 修改标签上的文字</span><br><span class="line">    def change_label_text():</span><br><span class="line">        nonlocal flag</span><br><span class="line">        flag = not flag</span><br><span class="line">        color, msg = (&apos;red&apos;, &apos;Hello, world!&apos;)\</span><br><span class="line">            if flag else (&apos;blue&apos;, &apos;Goodbye, world!&apos;)</span><br><span class="line">        label.config(text=msg, fg=color)</span><br><span class="line"></span><br><span class="line">    # 确认退出</span><br><span class="line">    def confirm_to_quit():</span><br><span class="line">        if tkinter.messagebox.askokcancel(&apos;温馨提示&apos;, &apos;确定要退出吗?&apos;):</span><br><span class="line">            top.quit()</span><br><span class="line"></span><br><span class="line">    # 创建顶层窗口</span><br><span class="line">    top = tkinter.Tk()</span><br><span class="line">    # 设置窗口大小</span><br><span class="line">    top.geometry(&apos;240x160&apos;)</span><br><span class="line">    # 设置窗口标题</span><br><span class="line">    top.title(&apos;小游戏&apos;)</span><br><span class="line">    # 创建标签对象并添加到顶层窗口</span><br><span class="line">    label = tkinter.Label(top, text=&apos;Hello, world!&apos;, font=&apos;Arial -32&apos;, fg=&apos;red&apos;)</span><br><span class="line">    label.pack(expand=1)</span><br><span class="line">    # 创建一个装按钮的容器</span><br><span class="line">    panel = tkinter.Frame(top)</span><br><span class="line">    # 创建按钮对象 指定添加到哪个容器中 通过command参数绑定事件回调函数</span><br><span class="line">    button1 = tkinter.Button(panel, text=&apos;修改&apos;, command=change_label_text)</span><br><span class="line">    button1.pack(side=&apos;left&apos;)</span><br><span class="line">    button2 = tkinter.Button(panel, text=&apos;退出&apos;, command=confirm_to_quit)</span><br><span class="line">    button2.pack(side=&apos;right&apos;)</span><br><span class="line">    panel.pack(side=&apos;bottom&apos;)</span><br><span class="line">    # 开启主事件循环</span><br><span class="line">    tkinter.mainloop()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main() </span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">GUI应用通常是事件驱动的，之所以进入主事件循环是为了监听鼠标、键盘等各种事件的发生并执行对应代码对事件的处理，因为事件会持续的发生，所以需要这样的一个循环一直运行着等待下一个事件的发生。另一方面，Tk为控件的摆放提供了三种布局管理器，通过布局管理器可以对控件进行定位，这三种布局管理器分别是：Placer（开发者提供控件的大小和摆放位置）、Packer（自动将控件填充到合适的位置）和Grid（基于网格坐标来摆放控件），此处不进行赘述。  </span><br><span class="line"></span><br><span class="line">### 使用pygame进行游戏开发</span><br><span class="line"></span><br><span class="line">- Pygame是一个开源的Python模块，专门用于多媒体应用（如电子游戏）的开发，其中包含对图像、声音、视频、事件、碰撞等的支持。Pygame建立在SDL的基础上，SDL是一套跨平台的多媒体开发库，用C语言实现，被广泛的应用于游戏、模拟器、播放器等的开发。而Pygame让游戏开发者不再被底层语言束缚，可以更多的关注游戏的功能和逻辑。</span><br><span class="line">- 下面我们来完成一个简单的小游戏，游戏的名字叫“大球吃小球”，当然完成这个游戏并不是重点，学会使用Pygame也不是重点，最重要的我们要在这个过程中体会如何使用前面讲解的面向对象程序设计，学会用这种编程思想去解决现实中的问题。  </span><br><span class="line"></span><br><span class="line">制作游戏窗口：</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line">import pygame</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    # 初始化导入的pygame中的模块</span><br><span class="line">    pygame.init()</span><br><span class="line">    # 初始化用于显示的窗口并设置窗口尺寸</span><br><span class="line">    screen = pygame.display.set_mode((800, 600))</span><br><span class="line">    # 设置当前窗口的标题</span><br><span class="line">    pygame.display.set_caption(&apos;大球吃小球&apos;)</span><br><span class="line">    running = True</span><br><span class="line">    # 开启一个事件循环处理发生的事件</span><br><span class="line">    while running:</span><br><span class="line">        # 从消息队列中获取事件并对事件进行处理</span><br><span class="line">        for event in pygame.event.get():</span><br><span class="line">            if event.type == pygame.QUIT:</span><br><span class="line">                running = False</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">- 如果需要直接加载图像到窗口上，可以使用pygame中image模块的函数来加载图像  </span><br><span class="line"></span><br><span class="line">-事实上要实现动画效果，本身的原理也非常简单，就是将不连续的图片连续的播放，只要每秒钟达到了一定的帧数，那么就可以做出比较流畅的动画效果。如果要让上面代码中的小球动起来，可以将小球的位置用变量来表示，并在循环中修改小球的位置再刷新整个窗口即可。</span><br></pre></td></tr></table></figure>
+<p>def main():</p>
+<pre><code># 初始化导入的pygame中的模块
+pygame.init()
+# 初始化用于显示的窗口并设置窗口尺寸
+screen = pygame.display.set_mode((800, 600))
+# 设置当前窗口的标题
+pygame.display.set_caption(&apos;大球吃小球&apos;)
+# 定义变量来表示小球在屏幕上的位置
+x, y = 50, 50
+running = True
+# 开启一个事件循环处理发生的事件
+while running:
+    # 从消息队列中获取事件并对事件进行处理
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    screen.fill((255, 255, 255))
+    pygame.draw.circle(screen, (255, 0, 0,), (x, y), 30, 0)
+    pygame.display.flip()
+    # 每隔50毫秒就改变小球的位置再刷新窗口
+    pygame.time.delay(50)
+    x, y = x + 5, y + 5
+</code></pre><p>if <strong>name</strong> == ‘<strong>main</strong>‘:<br>    main()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 碰撞检测</span><br><span class="line"></span><br><span class="line">- 通常一个游戏中会有很多对象出现，而这些对象之间的“碰撞”在所难免，比如炮弹击中了飞机、箱子撞到了地面等。碰撞检测在绝大多数的游戏中都是一个必须得处理的至关重要的问题，pygame的sprite（动画精灵）模块就提供了对碰撞检测的支持，这里我们暂时不介绍sprite模块提供的功能，因为要检测两个小球有没有碰撞其实非常简单，只需要检查球心的距离有没有小于两个球的半径之和。为了制造出更多的小球，我们可以通过对鼠标事件的处理，在点击鼠标的位置创建颜色、大小和移动速度都随机的小球，当然要做到这一点，我们可以把之前学习到的面向对象的知识应用起来。  </span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line">from enum import Enum, unique</span><br><span class="line">from math import sqrt</span><br><span class="line">from random import randint</span><br><span class="line"></span><br><span class="line">import pygame</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@unique</span><br><span class="line">class Color(Enum):</span><br><span class="line">    &quot;&quot;&quot;颜色&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    RED = (255, 0, 0)</span><br><span class="line">    GREEN = (0, 255, 0)</span><br><span class="line">    BLUE = (0, 0, 255)</span><br><span class="line">    BLACK = (0, 0, 0)</span><br><span class="line">    WHITE = (255, 255, 255)</span><br><span class="line">    GRAY = (242, 242, 242)</span><br><span class="line"></span><br><span class="line">    @staticmethod</span><br><span class="line">    def random_color():</span><br><span class="line">        &quot;&quot;&quot;获得随机颜色&quot;&quot;&quot;</span><br><span class="line">        r = randint(0, 255)</span><br><span class="line">        g = randint(0, 255)</span><br><span class="line">        b = randint(0, 255)</span><br><span class="line">        return (r, g, b)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Ball(object):</span><br><span class="line">    &quot;&quot;&quot;球&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def __init__(self, x, y, radius, sx, sy, color=Color.RED):</span><br><span class="line">        &quot;&quot;&quot;初始化方法&quot;&quot;&quot;</span><br><span class="line">        self.x = x</span><br><span class="line">        self.y = y</span><br><span class="line">        self.radius = radius</span><br><span class="line">        self.sx = sx</span><br><span class="line">        self.sy = sy</span><br><span class="line">        self.color = color</span><br><span class="line">        self.alive = True</span><br><span class="line"></span><br><span class="line">    def move(self, screen):</span><br><span class="line">        &quot;&quot;&quot;移动&quot;&quot;&quot;</span><br><span class="line">        self.x += self.sx</span><br><span class="line">        self.y += self.sy</span><br><span class="line">        if self.x - self.radius &lt;= 0 or \</span><br><span class="line">                self.x + self.radius &gt;= screen.get_width():</span><br><span class="line">            self.sx = -self.sx</span><br><span class="line">        if self.y - self.radius &lt;= 0 or \</span><br><span class="line">                self.y + self.radius &gt;= screen.get_height():</span><br><span class="line">            self.sy = -self.sy</span><br><span class="line"></span><br><span class="line">    def eat(self, other):</span><br><span class="line">        &quot;&quot;&quot;吃其他球&quot;&quot;&quot;</span><br><span class="line">        if self.alive and other.alive and self != other:</span><br><span class="line">            dx, dy = self.x - other.x, self.y - other.y</span><br><span class="line">            distance = sqrt(dx ** 2 + dy ** 2)</span><br><span class="line">            if distance &lt; self.radius + other.radius \</span><br><span class="line">                    and self.radius &gt; other.radius:</span><br><span class="line">                other.alive = False</span><br><span class="line">                self.radius = self.radius + int(other.radius * 0.146)</span><br><span class="line"></span><br><span class="line">    def draw(self, screen):</span><br><span class="line">        &quot;&quot;&quot;在窗口上绘制球&quot;&quot;&quot;</span><br><span class="line">        pygame.draw.circle(screen, self.color,</span><br><span class="line">                           (self.x, self.y), self.radius, 0)</span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">- 事件处理  </span><br><span class="line"></span><br><span class="line">&gt;可以在事件循环中对鼠标事件进行处理，通过事件对象的type属性可以判定事件类型，再通过pos属性就可以获得鼠标点击的位置。如果要处理键盘事件也是在这个地方，做法与处理鼠标事件类似。  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line">def main():</span><br><span class="line">    # 定义用来装所有球的容器</span><br><span class="line">    balls = []</span><br><span class="line">    # 初始化导入的pygame中的模块</span><br><span class="line">    pygame.init()</span><br><span class="line">    # 初始化用于显示的窗口并设置窗口尺寸</span><br><span class="line">    screen = pygame.display.set_mode((800, 600))</span><br><span class="line">    # 设置当前窗口的标题</span><br><span class="line">    pygame.display.set_caption(&apos;大球吃小球&apos;)</span><br><span class="line">    running = True</span><br><span class="line">    # 开启一个事件循环处理发生的事件</span><br><span class="line">    while running:</span><br><span class="line">        # 从消息队列中获取事件并对事件进行处理</span><br><span class="line">        for event in pygame.event.get():</span><br><span class="line">            if event.type == pygame.QUIT:</span><br><span class="line">                running = False</span><br><span class="line">            # 处理鼠标事件的代码</span><br><span class="line">            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:</span><br><span class="line">                # 获得点击鼠标的位置</span><br><span class="line">                x, y = event.pos</span><br><span class="line">                radius = randint(10, 100)</span><br><span class="line">                sx, sy = randint(-10, 10), randint(-10, 10)</span><br><span class="line">                color = Color.random_color()</span><br><span class="line">                # 在点击鼠标的位置创建一个球(大小、速度和颜色随机)</span><br><span class="line">                ball = Ball(x, y, radius, sx, sy, color)</span><br><span class="line">                # 将球添加到列表容器中</span><br><span class="line">                balls.append(ball)</span><br><span class="line">        screen.fill((255, 255, 255))</span><br><span class="line">        # 取出容器中的球 如果没被吃掉就绘制 被吃掉了就移除</span><br><span class="line">        for ball in balls:</span><br><span class="line">            if ball.alive:</span><br><span class="line">                ball.draw(screen)</span><br><span class="line">            else:</span><br><span class="line">                balls.remove(ball)</span><br><span class="line">        pygame.display.flip()</span><br><span class="line">        # 每隔50毫秒就改变球的位置再刷新窗口</span><br><span class="line">        pygame.time.delay(50)</span><br><span class="line">        for ball in balls:</span><br><span class="line">            ball.move(screen)</span><br><span class="line">            # 检查球有没有吃到其他的球</span><br><span class="line">            for other in balls:</span><br><span class="line">                ball.eat(other)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/12/python-面向对象/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="pyh">
+      <meta itemprop="description" content="carry on!">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanzawa">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/12/python-面向对象/" class="post-title-link" itemprop="url">python 面向对象</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-05-12 09:29:24" itemprop="dateCreated datePublished" datetime="2019-05-12T09:29:24+08:00">2019-05-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2019-05-13 12:42:55" itemprop="dateModified" datetime="2019-05-13T12:42:55+08:00">2019-05-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="再过一遍，目的是补充部分模糊的知识"><a href="#再过一遍，目的是补充部分模糊的知识" class="headerlink" title="再过一遍，目的是补充部分模糊的知识"></a>再过一遍，目的是补充部分模糊的知识</h2><h3 id="大部分内容转自-GitHub-python-100-Days"><a href="#大部分内容转自-GitHub-python-100-Days" class="headerlink" title="大部分内容转自 GitHub python-100-Days"></a>大部分内容转自 GitHub python-100-Days</h3><ul>
+<li>属性和方法的访问权限只有两种，也就是公开和私有的，如果希望属性是私有的，在给属性命名时可以用两个下划线开头。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class Test:</span><br><span class="line"></span><br><span class="line">    def __init__(self, foo):</span><br><span class="line">        self.__foo = foo</span><br><span class="line"></span><br><span class="line">    def __bar(self):</span><br><span class="line">        print(self.__foo)</span><br><span class="line">        print(&apos;__bar&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    test = Test(&apos;hello&apos;)</span><br><span class="line">    # AttributeError: &apos;Test&apos; object has no attribute &apos;__bar&apos;</span><br><span class="line">    test.__bar()</span><br><span class="line">    # AttributeError: &apos;Test&apos; object has no attribute &apos;__foo&apos;</span><br><span class="line">    print(test.__foo)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>但是，Python并没有从语法上严格保证私有属性或方法的私密性，它只是给私有的属性和方法换了一个名字来“妨碍”对它们的访问，事实上如果你知道更换名字的规则仍然可以访问到它们，下面的代码就可以验证这一点。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">class Test:</span><br><span class="line"></span><br><span class="line">    def __init__(self, foo):</span><br><span class="line">        self.__foo = foo</span><br><span class="line"></span><br><span class="line">    def __bar(self):</span><br><span class="line">        print(self.__foo)</span><br><span class="line">        print(&apos;__bar&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    test = Test(&apos;hello&apos;)</span><br><span class="line">    test._Test__bar()</span><br><span class="line">    print(test._Test__foo)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在实际开发中，我们并不建议将属性设置为私有的，因为这会导致子类无法访问（后面会讲到）。所以大多数Python程序员会遵循一种命名惯例就是让属性名以单下划线开头来表示属性是受保护的，本类之外的代码在访问这样的属性时应该要保持慎重。  </li>
+</ul>
+<h3 id="property装饰器"><a href="#property装饰器" class="headerlink" title="@property装饰器"></a>@property装饰器</h3><ul>
+<li>之前我们讨论过Python中属性和方法访问权限的问题，虽然我们不建议将属性设置为私有的，但是如果直接将属性暴露给外界也是有问题的，比如我们没有办法检查赋给属性的值是否有效。我们之前的建议是将属性命名以单下划线开头，通过这种方式来暗示属性是受保护的，不建议外界直接访问，那么如果想访问属性可以通过属性的getter（访问器）和setter（修改器）方法进行对应的操作。如果要做到这点，就可以考虑使用@property包装器来包装getter和setter方法，使得对属性的访问既安全又方便，代码如下所示。</li>
+</ul>
+<figure class="highlight plain"><figcaption><span>Person(object):</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    def __init__(self, name, age):</span><br><span class="line">        self._name = name</span><br><span class="line">        self._age = age</span><br><span class="line"></span><br><span class="line">    # 访问器 - getter方法</span><br><span class="line">    @property</span><br><span class="line">    def name(self):</span><br><span class="line">        return self._name</span><br><span class="line"></span><br><span class="line">    # 访问器 - getter方法</span><br><span class="line">    @property</span><br><span class="line">    def age(self):</span><br><span class="line">        return self._age</span><br><span class="line"></span><br><span class="line">    # 修改器 - setter方法</span><br><span class="line">    @age.setter        #age可以访问与修改但name不可以</span><br><span class="line">    def age(self, age):</span><br><span class="line">        self._age = age</span><br><span class="line"></span><br><span class="line">    def play(self):</span><br><span class="line">        if self._age &lt;= 16:</span><br><span class="line">            print(&apos;%s正在玩飞行棋.&apos; % self._name)</span><br><span class="line">        else:</span><br><span class="line">            print(&apos;%s正在玩斗地主.&apos; % self._name)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    person = Person(&apos;王大锤&apos;, 12)</span><br><span class="line">    person.play()</span><br><span class="line">    person.age = 22</span><br><span class="line">    person.play()</span><br><span class="line">    # person.name = &apos;白元芳&apos;  # AttributeError: can&apos;t set attribute</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()  </span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">### 静态方法和类方法</span><br><span class="line"></span><br><span class="line">- 前面在类中定义的方法都是对象方法，都是发送给对象的消息。我们定义一个三角形类，入参为三条边，写一个验证判断三边能否构成三角形的方法，该方法显然不是对象方法，因为调用这个方法时三角形对象还未创建出来，所以该方法属于三角形类而并不属于三角形对象，我们能用静态方法解决这类问题。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">```  </span><br><span class="line">from math import sqrt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Triangle(object):</span><br><span class="line"></span><br><span class="line">    def __init__(self, a, b, c):</span><br><span class="line">        self._a = a</span><br><span class="line">        self._b = b</span><br><span class="line">        self._c = c</span><br><span class="line"></span><br><span class="line">    @staticmethod</span><br><span class="line">    def is_valid(a, b, c):</span><br><span class="line">        return a + b &gt; c and b + c &gt; a and a + c &gt; b</span><br><span class="line"></span><br><span class="line">    def perimeter(self):</span><br><span class="line">        return self._a + self._b + self._c</span><br><span class="line"></span><br><span class="line">    def area(self):</span><br><span class="line">        half = self.perimeter() / 2</span><br><span class="line">        return sqrt(half * (half - self._a) *</span><br><span class="line">                    (half - self._b) * (half - self._c))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    a, b, c = 3, 4, 5</span><br><span class="line">    # 静态方法和类方法都是通过给类发消息来调用的</span><br><span class="line">    if Triangle.is_valid(a, b, c):</span><br><span class="line">        t = Triangle(a, b, c)</span><br><span class="line">        print(t.perimeter())</span><br><span class="line">        # 也可以通过给类发消息来调用对象方法但是要传入接收消息的对象作为参数</span><br><span class="line">        # print(Triangle.perimeter(t))</span><br><span class="line">        print(t.area())</span><br><span class="line">        # print(Triangle.area(t))</span><br><span class="line">    else:</span><br><span class="line">        print(&apos;无法构成三角形.&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">    main()  </span><br><span class="line">```  </span><br><span class="line"></span><br><span class="line">- 和静态方法比较类似，Python还可以在类中定义类方法，类方法的第一个参数约定名为cls，它代表的是当前类相关的信息的对象（类本身也是一个对象，有的地方也称之为类的元数据对象），通过这个参数我们可以获取和类相关的信息并且可以创建出类的对象，代码如下所示。</span><br></pre></td></tr></table></figure>
+<p>from time import time, localtime, sleep</p>
+<p>class Clock(object):<br>    “””数字时钟”””</p>
+<pre><code>def __init__(self, hour=0, minute=0, second=0):
+    self._hour = hour
+    self._minute = minute
+    self._second = second
+
+@classmethod
+def now(cls):
+    ctime = localtime(time())
+    return cls(ctime.tm_hour, ctime.tm_min, ctime.tm_sec)
+
+def run(self):
+    &quot;&quot;&quot;走字&quot;&quot;&quot;
+    self._second += 1
+    if self._second == 60:
+        self._second = 0
+        self._minute += 1
+        if self._minute == 60:
+            self._minute = 0
+            self._hour += 1
+            if self._hour == 24:
+                self._hour = 0
+
+def show(self):
+    &quot;&quot;&quot;显示时间&quot;&quot;&quot;
+    return &apos;%02d:%02d:%02d&apos; % \
+           (self._hour, self._minute, self._second)
+</code></pre><p>def main():</p>
+<pre><code># 通过类方法创建对象并获取系统时间
+clock = Clock.now()
+while True:
+    print(clock.show())
+    sleep(1)
+    clock.run()
+</code></pre><p>if <strong>name</strong> == ‘<strong>main</strong>‘:<br>    main()</p>
+<pre><code>通过cls参数我们可以创建出我们想要的类的对象。    
+
+
+### 类之间的关系
+- 简单的说，类和类之间的关系有三种：is-a、has-a和use-a关系。
+
+&gt;is-a关系也叫继承或泛化，比如学生和人的关系、手机和电子产品的关系都属于继承关系。  
+
+&gt;has-a关系通常称之为关联，比如部门和员工的关系，汽车和引擎的关系都属于关联关系；关联关系如果是整体和部分的关联，那么我们称之为聚合关系；如果整体进一步负责了部分的生命周期（整体和部分是不可分割的，同时同在也同时消亡），那么这种就是最强的关联关系，我们称之为合成关系。  
+
+&gt;use-a关系通常称之为依赖，比如司机有一个驾驶的行为（方法），其中（的参数）使用到了汽车，那么司机和汽车的关系就是依赖关系。  
+
+
+- 继承和多态
+
+&gt;可以在已有类的基础上创建新类，这其中的一种做法就是让一个类从另一个类那里将属性和方法直接继承下来，从而减少重复代码的编写。提供继承信息的我们称之为父类，也叫超类或基类；得到继承信息的我们称之为子类，也叫派生类或衍生类。子类除了继承父类提供的属性和方法，还可以定义自己特有的属性和方法，所以子类比父类拥有的更多的能力，在实际开发中，我们经常会用子类对象去替换掉一个父类对象，这是面向对象编程中一个常见的行为，对应的原则称之为里氏替换原则。下面我们先看一个继承的例子。  
+
+&gt;子类在继承了父类的方法后，可以对父类已有的方法给出新的实现版本，这个动作称之为方法重写（override）。通过方法重写我们可以让父类的同一个行为在子类中拥有不同的实现版本，当我们调用这个经过子类重写的方法时，不同的子类对象会表现出不同的行为，这个就是多态（poly-morphism）。  
+
+
+</code></pre><p>from abc import ABCMeta, abstractmethod</p>
+<p>class Pet(object, metaclass=ABCMeta):<br>    “””宠物”””</p>
+<pre><code>def __init__(self, nickname):
+    self._nickname = nickname
+
+@abstractmethod
+def make_voice(self):
+    &quot;&quot;&quot;发出声音&quot;&quot;&quot;
+    pass
+</code></pre><p>class Dog(Pet):<br>    “””狗”””</p>
+<pre><code>def make_voice(self):
+    print(&apos;%s: 汪汪汪...&apos; % self._nickname)
+</code></pre><p>class Cat(Pet):<br>    “””猫”””</p>
+<pre><code>def make_voice(self):
+    print(&apos;%s: 喵...喵...&apos; % self._nickname)
+</code></pre><p>def main():<br>    pets = [Dog(‘旺财’), Cat(‘凯蒂’), Dog(‘大黄’)]<br>    for pet in pets:<br>        pet.make_voice()</p>
+<p>if <strong>name</strong> == ‘<strong>main</strong>‘:<br>    main()</p>
+<p><code>`</code>  </p>
+<p>这里重写了父类Pet类中的make_voice方法。  </p>
+<blockquote>
+<p>在上面的代码中，我们将Pet类处理成了一个抽象类，所谓抽象类就是不能够创建对象的类，这种类的存在就是专门为了让其他类去继承它。Python从语法层面并没有像Java或C#那样提供对抽象类的支持，但是我们可以通过abc模块的ABCMeta元类和abstractmethod包装器来达到抽象类的效果，如果一个类中存在抽象方法那么这个类就不能够实例化（创建对象）。上面的代码中，Dog和Cat两个子类分别对Pet类中的make_voice抽象方法进行了重写并给出了不同的实现版本，当我们在main函数中调用该方法时，这个方法就表现出了多态行为（同样的方法做了不同的事情）。  </p>
+</blockquote>
+<h3 id="抽象类就是不能创建对象的类，这种类存在的意义就是被继承，python需要abc模块的ABCMeta元类和abstractmethod包装器来达到抽象类的效果，若类中存在抽象方法那么类就不能实例化。"><a href="#抽象类就是不能创建对象的类，这种类存在的意义就是被继承，python需要abc模块的ABCMeta元类和abstractmethod包装器来达到抽象类的效果，若类中存在抽象方法那么类就不能实例化。" class="headerlink" title="抽象类就是不能创建对象的类，这种类存在的意义就是被继承，python需要abc模块的ABCMeta元类和abstractmethod包装器来达到抽象类的效果，若类中存在抽象方法那么类就不能实例化。"></a>抽象类就是不能创建对象的类，这种类存在的意义就是被继承，python需要abc模块的ABCMeta元类和abstractmethod包装器来达到抽象类的效果，若类中存在抽象方法那么类就不能实例化。</h3>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/10/wiki-api-of-python/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -761,6 +1370,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/markdown写法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="pyh">
+      <meta itemprop="description" content="carry on!">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hanzawa">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/05/08/markdown写法/" class="post-title-link" itemprop="url">markdown写法</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-05-08 19:35:16" itemprop="dateCreated datePublished" datetime="2019-05-08T19:35:16+08:00">2019-05-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2019-05-09 09:01:37" itemprop="dateModified" datetime="2019-05-09T09:01:37+08:00">2019-05-09</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="md文件的写法"><a href="#md文件的写法" class="headerlink" title=".md文件的写法"></a>.md文件的写法</h2><p>1.一、二、三级标题分别对应# ## ###<br>2.两个空格即换行  </p>
+<blockquote>
+<p>详细参考<a href="https://sspai.com/post/45816" target="_blank" rel="noopener">https://sspai.com/post/45816</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/hexo搭建及部署到GitHub/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -912,164 +1679,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/08/markdown写法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="pyh">
-      <meta itemprop="description" content="carry on!">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hanzawa">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/05/08/markdown写法/" class="post-title-link" itemprop="url">markdown写法</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-
-              
-                
-              
-
-              <time title="Erstellt: 2019-05-08 19:35:16" itemprop="dateCreated datePublished" datetime="2019-05-08T19:35:16+08:00">2019-05-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Bearbeitet am</span>
-                
-                <time title="Geändert am: 2019-05-09 09:01:37" itemprop="dateModified" datetime="2019-05-09T09:01:37+08:00">2019-05-09</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="md文件的写法"><a href="#md文件的写法" class="headerlink" title=".md文件的写法"></a>.md文件的写法</h2><p>1.一、二、三级标题分别对应# ## ###<br>2.两个空格即换行  </p>
-<blockquote>
-<p>详细参考<a href="https://sspai.com/post/45816" target="_blank" rel="noopener">https://sspai.com/post/45816</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1112,7 +1721,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">Artikel</span>
                   </a>
                 </div>
@@ -1137,7 +1746,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">5</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">schlagwörter</span>
                   
                 </div>
